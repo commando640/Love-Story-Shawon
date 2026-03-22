@@ -192,80 +192,210 @@
   .divider { width:44px; height:2px; border-radius:2px; background:linear-gradient(90deg, var(--deep-rose), var(--gold)); margin:0 auto 32px; }
 
   /* ══════════════════════════════════════
-     GALLERY — CINEMATIC 3D STACK
+     GALLERY — PREMIUM FULLSCREEN SWIPER
   ══════════════════════════════════════ */
-  #gallery { padding:72px 0 80px; background:var(--dark); overflow:hidden; }
-  .gal-header { text-align:center; margin-bottom:36px; padding:0 24px; }
+  #gallery {
+    padding:72px 0 72px;
+    background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 50%, var(--dark) 100%);
+    overflow:hidden;
+  }
+  .gal-header { text-align:center; margin-bottom:32px; padding:0 24px; }
 
-  .cinema-stage {
-    position:relative; width:100%; height:80vw; max-height:360px; min-height:230px;
+  /* ── Viewport window ── */
+  .gal-viewport {
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    touch-action:pan-y;
+    user-select:none;
+    -webkit-user-select:none;
+    /* Prevent pinch-zoom on this element */
+    touch-action:pan-y pinch-zoom;
+  }
+  /* Prevent ANY zoom on gallery images */
+  .gal-viewport img,
+  .gal-viewport * { touch-action:pan-y; }
+
+  /* ── Track that slides ── */
+  .gal-track {
+    display:flex;
+    will-change:transform;
+    /* transition applied via JS for smooth drag+snap */
+  }
+
+  /* ── Each slide ── */
+  .gal-slide {
+    flex:0 0 100%;
+    padding:0 24px;
+    box-sizing:border-box;
+  }
+
+  /* ── The card itself ── */
+  .gal-card {
+    position:relative;
+    width:100%;
+    border-radius:26px;
+    overflow:hidden;
+    background:var(--dark3);
+    /* Tall portrait ratio */
+    aspect-ratio:3/4;
+    box-shadow:
+      0 2px 0 rgba(232,160,180,.18),
+      0 30px 70px rgba(0,0,0,.85),
+      0 8px 24px rgba(192,82,111,.25);
+  }
+
+  /* Soft glow border on card */
+  .gal-card::after {
+    content:''; position:absolute; inset:0;
+    border-radius:26px;
+    box-shadow:inset 0 0 0 1px rgba(232,160,180,.22),
+               inset 0 0 30px rgba(192,82,111,.06);
+    pointer-events:none; z-index:5;
+  }
+
+  .gal-card img {
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; display:block;
+    pointer-events:none;
+    -webkit-user-drag:none;
+    transform:translateZ(0); /* GPU layer */
+  }
+
+  /* ── Cinematic gradient overlays ── */
+  .gal-card-top {
+    position:absolute; top:0; left:0; right:0; height:40%;
+    background:linear-gradient(to bottom,rgba(8,4,8,.7) 0%,transparent 100%);
+    z-index:2; pointer-events:none;
+  }
+  .gal-card-bot {
+    position:absolute; bottom:0; left:0; right:0; height:55%;
+    background:linear-gradient(to top,rgba(8,4,8,.97) 0%,rgba(8,4,8,.5) 45%,transparent 100%);
+    z-index:2; pointer-events:none;
+  }
+
+  /* ── Top-left number ── */
+  .gal-index {
+    position:absolute; top:16px; left:18px; z-index:4;
+    font-family:'Cormorant Garamond',serif;
+    font-size:11px; letter-spacing:.24em; color:rgba(255,255,255,.5);
+  }
+
+  /* ── Top-right rose ── */
+  .gal-rose {
+    position:absolute; top:14px; right:16px; z-index:4;
+    font-size:22px; filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));
+    animation:roseBreath 3s ease-in-out infinite;
+  }
+  @keyframes roseBreath { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12) rotate(5deg);} }
+
+  /* ── Bottom caption area ── */
+  .gal-info {
+    position:absolute; bottom:0; left:0; right:0; z-index:3;
+    padding:22px 20px;
+  }
+  .gal-date {
+    font-size:9px; letter-spacing:.3em; color:var(--gold);
+    text-transform:uppercase; margin-bottom:5px;
+    font-family:'Cormorant Garamond',serif;
+  }
+  .gal-cap {
+    font-family:'Playfair Display',serif;
+    font-size:18px; color:var(--light); font-style:italic; line-height:1.25;
+  }
+  .gal-cap-sub {
+    font-family:'Cormorant Garamond',serif;
+    font-size:13px; color:var(--muted); margin-top:5px; font-style:italic;
+  }
+
+  /* ── Side peek shadows (depth cue) ── */
+  .gal-peek-l,.gal-peek-r {
+    position:absolute; top:0; bottom:0; width:28px; z-index:10;
+    pointer-events:none;
+  }
+  .gal-peek-l { left:0;  background:linear-gradient(to right,rgba(8,4,8,.55),transparent); }
+  .gal-peek-r { right:0; background:linear-gradient(to left, rgba(8,4,8,.55),transparent); }
+
+  /* ── Bottom controls ── */
+  .gal-controls {
     display:flex; align-items:center; justify-content:center;
-    overflow:hidden; touch-action:pan-y; user-select:none;
+    gap:20px; margin-top:24px; padding:0 24px;
   }
-
-  .cc {
-    position:absolute;
-    width:62vw; max-width:250px;
-    height:76vw; max-height:330px; min-height:200px;
-    border-radius:22px; overflow:hidden;
-    transition:transform .5s cubic-bezier(.34,1.1,.64,1), opacity .5s ease, filter .5s ease, box-shadow .5s ease;
-    will-change:transform; cursor:pointer;
-  }
-  /* Positions */
-  .cc[data-p="0"]  { transform:translateX(0) scale(1) rotate(0deg);      opacity:1;   z-index:6; filter:none; box-shadow:0 24px 60px rgba(0,0,0,.8), 0 0 0 1.5px rgba(232,160,180,.35); }
-  .cc[data-p="1"]  { transform:translateX(55%) scale(.86) rotate(5deg);  opacity:.7;  z-index:5; filter:brightness(.65) saturate(.8); box-shadow:0 14px 40px rgba(0,0,0,.6); }
-  .cc[data-p="2"]  { transform:translateX(90%) scale(.74) rotate(9deg);  opacity:.4;  z-index:4; filter:brightness(.45) saturate(.6); box-shadow:0 8px 24px rgba(0,0,0,.5); }
-  .cc[data-p="-1"] { transform:translateX(-55%) scale(.86) rotate(-5deg); opacity:.7; z-index:5; filter:brightness(.65) saturate(.8); box-shadow:0 14px 40px rgba(0,0,0,.6); }
-  .cc[data-p="-2"] { transform:translateX(-90%) scale(.74) rotate(-9deg); opacity:.4; z-index:4; filter:brightness(.45) saturate(.6); box-shadow:0 8px 24px rgba(0,0,0,.5); }
-  .cc[data-p="hr"] { transform:translateX(135%) scale(.65) rotate(12deg); opacity:0;  z-index:1; pointer-events:none; }
-  .cc[data-p="hl"] { transform:translateX(-135%) scale(.65) rotate(-12deg); opacity:0; z-index:1; pointer-events:none; }
-
-  .cc img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
-
-  /* Cinematic overlay */
-  .cc-ov {
-    position:absolute; inset:0; z-index:3;
-    background:linear-gradient(to top, rgba(8,4,8,.95) 0%, rgba(8,4,8,.2) 50%, transparent 78%);
-    display:flex; flex-direction:column; justify-content:flex-end; padding:16px;
-  }
-  .cc-date { font-size:9px; letter-spacing:.28em; color:var(--gold); text-transform:uppercase; margin-bottom:4px; }
-  .cc-cap  { font-family:'Playfair Display',serif; font-size:15px; color:var(--light); font-style:italic; line-height:1.3; }
-
-  /* Film grain */
-  .cc::before {
-    content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
-    background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-    mix-blend-mode:overlay; opacity:.55;
-  }
-
-  /* Rose badge */
-  .cc-rose { position:absolute; top:11px; right:11px; z-index:4; font-size:18px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.6)); }
-
-  /* Number badge */
-  .cc-num { position:absolute; top:11px; left:11px; z-index:4; font-family:'Cormorant Garamond',serif; font-size:11px; color:rgba(255,255,255,.55); letter-spacing:.1em; }
-
-  /* Nav + pips */
-  .gal-nav { display:flex; justify-content:center; gap:18px; margin-top:26px; }
   .gnb {
-    width:48px; height:48px; border-radius:50%;
-    background:rgba(255,255,255,.04); border:1px solid rgba(232,160,180,.2);
-    color:var(--rose); font-size:20px;
+    width:50px; height:50px; border-radius:50%;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(232,160,180,.22);
+    color:var(--rose); font-size:22px;
     display:flex; align-items:center; justify-content:center;
-    transition:background .2s, transform .15s;
+    transition:background .18s, transform .12s, box-shadow .18s;
+    flex-shrink:0;
   }
-  .gnb:active { transform:scale(.88); background:rgba(232,160,180,.12); }
-  .gal-pips { display:flex; justify-content:center; gap:6px; margin-top:16px; }
-  .pip { height:2px; border-radius:2px; background:rgba(232,160,180,.22); transition:width .4s cubic-bezier(.34,1.2,.64,1), background .4s; width:14px; }
-  .pip.on { width:34px; background:var(--rose); }
-  .gal-cnt { text-align:center; margin-top:9px; font-family:'Cormorant Garamond',serif; font-size:13px; color:var(--muted); letter-spacing:.12em; }
+  .gnb:active { transform:scale(.86); background:rgba(232,160,180,.14); box-shadow:0 0 16px rgba(232,160,180,.2); }
+
+  /* ── Pips ── */
+  .gal-pips { display:flex; align-items:center; gap:6px; flex:1; justify-content:center; }
+  .pip {
+    height:3px; border-radius:3px;
+    background:rgba(232,160,180,.2);
+    transition:width .35s cubic-bezier(.34,1.3,.64,1), background .35s;
+    width:12px;
+  }
+  .pip.on { width:30px; background:var(--rose); box-shadow:0 0 8px rgba(232,160,180,.4); }
+
+  .gal-cnt {
+    font-family:'Cormorant Garamond',serif; font-size:13px;
+    color:var(--muted); letter-spacing:.14em; flex-shrink:0; min-width:36px; text-align:right;
+  }
   .gal-cnt em { color:var(--rose); font-style:normal; }
 
-  /* Lightbox */
-  #lb { position:fixed; inset:0; z-index:2000; background:rgba(8,4,8,.98); backdrop-filter:blur(20px); display:none; align-items:center; justify-content:center; padding:24px; }
+  /* ── Placeholder when no image ── */
+  .gal-ph {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:10px;
+    color:var(--muted); font-size:12px; text-align:center; padding:20px;
+    background:var(--dark3);
+  }
+  .gal-ph span { font-size:36px; opacity:.35; }
+
+  /* ══ LIGHTBOX ══════════════════════════════════ */
+  #lb {
+    position:fixed; inset:0; z-index:2000;
+    background:rgba(8,4,8,.98);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    display:none; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:20px;
+    /* Prevent zoom in lightbox */
+    touch-action:pan-y;
+  }
   #lb.on { display:flex; }
-  #lb img { max-width:100%; max-height:84vh; border-radius:16px; object-fit:contain; animation:popIn .28s cubic-bezier(.34,1.56,.64,1); box-shadow:0 20px 60px rgba(192,82,111,.4); }
-  @keyframes popIn { from{transform:scale(.85);opacity:0;} to{transform:scale(1);opacity:1;} }
-  #lb-x { position:absolute; top:calc(var(--safe-t)+16px); right:18px; background:rgba(232,160,180,.12); color:var(--rose); font-size:22px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  #lb-img-wrap {
+    position:relative; max-width:100%; max-height:82vh;
+    border-radius:18px; overflow:hidden;
+    box-shadow:0 24px 80px rgba(192,82,111,.45);
+    animation:popIn .3s cubic-bezier(.34,1.4,.64,1);
+  }
+  #lb img {
+    max-width:100%; max-height:82vh;
+    object-fit:contain; display:block;
+    pointer-events:none; touch-action:none;
+    border-radius:18px;
+  }
+  @keyframes popIn { from{transform:scale(.82);opacity:0;} to{transform:scale(1);opacity:1;} }
+  #lb-x {
+    position:absolute; top:calc(var(--safe-t)+16px); right:18px;
+    background:rgba(232,160,180,.14); border:1px solid rgba(232,160,180,.25);
+    color:var(--rose); font-size:20px;
+    width:46px; height:46px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    z-index:3;
+  }
+  #lb-cap {
+    margin-top:16px; font-family:'Playfair Display',serif;
+    font-size:16px; font-style:italic; color:var(--muted);
+    text-align:center; letter-spacing:.04em;
+  }
 
   /* ══════════════════════════════════════
      LOVE LETTER  + FLOATING PHOTOS
@@ -433,7 +563,10 @@
 <!-- LIGHTBOX -->
 <div id="lb">
   <button id="lb-x" onclick="closeLB()">✕</button>
-  <img id="lb-img" src="" alt=""/>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt=""/>
+  </div>
+  <div id="lb-cap"></div>
 </div>
 
 <!-- NAV DRAWER -->
@@ -515,46 +648,130 @@
     <div class="divider"></div>
   </div>
 
-  <!-- ✏️ ছবি ফাইল: photo1.jpg → photo6.jpg (একই ফোল্ডারে) -->
-  <div class="cinema-stage" id="cstage">
-    <div class="cc" data-i="0" data-p="0"  onclick="ccClick(0)">
-      <img src="photo1.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo1.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">প্রথম দেখা ✨</div></div>
-      <div class="cc-rose">🌹</div><div class="cc-num">01</div>
-    </div>
-    <div class="cc" data-i="1" data-p="1"  onclick="ccClick(1)">
-      <img src="photo2.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo2.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">বিশেষ একটি দিন 💕</div></div>
-      <div class="cc-rose">🌸</div><div class="cc-num">02</div>
-    </div>
-    <div class="cc" data-i="2" data-p="2"  onclick="ccClick(2)">
-      <img src="photo3.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo3.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">সন্ধ্যার আলোয় 🌅</div></div>
-      <div class="cc-rose">💮</div><div class="cc-num">03</div>
-    </div>
-    <div class="cc" data-i="3" data-p="hr" onclick="ccClick(3)">
-      <img src="photo4.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo4.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">একসাথে হাঁটা 🌸</div></div>
-      <div class="cc-rose">🌺</div><div class="cc-num">04</div>
-    </div>
-    <div class="cc" data-i="4" data-p="hr" onclick="ccClick(4)">
-      <img src="photo5.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo5.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">চাঁদনীর হাসি 😊</div></div>
-      <div class="cc-rose">🌷</div><div class="cc-num">05</div>
-    </div>
-    <div class="cc" data-i="5" data-p="hr" onclick="ccClick(5)">
-      <img src="photo6.jpg" alt="" onerror="this.parentElement.innerHTML+='<div class=cinema-ph><span>📸</span>photo6.jpg</div>'"/>
-      <div class="cc-ov"><div class="cc-date">[তারিখ]</div><div class="cc-cap">চিরকালের মুহূর্ত 💫</div></div>
-      <div class="cc-rose">✨</div><div class="cc-num">06</div>
-    </div>
-  </div>
+  <div class="gal-viewport" id="galVP">
+    <div class="gal-track" id="galTrack">
 
-  <div class="gal-nav">
-    <button class="gnb" onclick="galPrev()">‹</button>
-    <button class="gnb" onclick="galNext()">›</button>
+      <!-- ✏️ photo1.jpg → photo6.jpg একই ফোল্ডারে রাখো -->
+      <!-- ✏️ gal-date ও gal-cap কাস্টমাইজ করো -->
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo1.jpg" alt="ছবি ১"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo1.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">01 / 06</div>
+          <div class="gal-rose">🌹</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">প্রথম দেখা</div>
+            <div class="gal-cap-sub">সেই মুহূর্ত যা সব বদলে দিয়েছিল ✨</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo2.jpg" alt="ছবি ২"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo2.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">02 / 06</div>
+          <div class="gal-rose">🌸</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">বিশেষ একটি দিন</div>
+            <div class="gal-cap-sub">শাওন ও চাঁদনীর একটি অনন্য মুহূর্ত 💕</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo3.jpg" alt="ছবি ৩"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo3.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">03 / 06</div>
+          <div class="gal-rose">🌙</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">সন্ধ্যার আলোয়</div>
+            <div class="gal-cap-sub">সোনালি আলোয় মোড়া একটি বিকেল 🌅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo4.jpg" alt="ছবি ৪"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo4.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">04 / 06</div>
+          <div class="gal-rose">🌺</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">একসাথে হাঁটা</div>
+            <div class="gal-cap-sub">তোমার হাত ধরে পথ চলা 🌸</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo5.jpg" alt="ছবি ৫"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo5.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">05 / 06</div>
+          <div class="gal-rose">🌷</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">চাঁদনীর হাসি</div>
+            <div class="gal-cap-sub">যে হাসি শাওনের পৃথিবী আলো করে 😊</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-slide">
+        <div class="gal-card">
+          <img src="photo6.jpg" alt="ছবি ৬"
+            onerror="this.style.display='none';this.parentElement.querySelector('.gal-ph').style.display='flex'"/>
+          <div class="gal-ph" style="display:none"><span>📸</span>photo6.jpg</div>
+          <div class="gal-card-top"></div>
+          <div class="gal-card-bot"></div>
+          <div class="gal-index">06 / 06</div>
+          <div class="gal-rose">✨</div>
+          <div class="gal-info">
+            <div class="gal-date">[তারিখ লিখো]</div>
+            <div class="gal-cap">চিরকালের মুহূর্ত</div>
+            <div class="gal-cap-sub">এই মুহূর্তটা চিরকাল থাকবে 💫</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /track -->
+
+    <!-- depth cues -->
+    <div class="gal-peek-l"></div>
+    <div class="gal-peek-r"></div>
+  </div><!-- /viewport -->
+
+  <!-- Controls -->
+  <div class="gal-controls">
+    <button class="gnb" id="galPrevBtn" aria-label="আগে">‹</button>
+    <div class="gal-pips" id="gPips"></div>
+    <button class="gnb" id="galNextBtn" aria-label="পরে">›</button>
   </div>
-  <div class="gal-pips" id="gPips"></div>
-  <div class="gal-cnt"><em id="gCurN">1</em> / <span id="gTotN">6</span></div>
+  <div class="gal-cnt" style="margin-top:10px;text-align:center">
+    <em id="gCurN">1</em> <span style="color:var(--muted)">/</span> <span id="gTotN">6</span>
+  </div>
 </section>
 
 <!-- ══ LOVE LETTER ════════════════════════════════ -->
@@ -767,58 +984,137 @@ function updC(){
 }
 updC(); setInterval(updC,1000);
 
-/* ── CINEMA GALLERY ───────────────────── */
-const cards=Array.from(document.querySelectorAll('.cc'));
-const TOTAL=cards.length;
-let cur=0, busy=false;
+/* ── GALLERY — smooth swiper, NO zoom ─────────── */
+(function(){
+  const vp    = document.getElementById('galVP');
+  const track = document.getElementById('galTrack');
+  const slides = track.querySelectorAll('.gal-slide');
+  const N      = slides.length;
+  const pipsEl = document.getElementById('gPips');
+  const curEl  = document.getElementById('gCurN');
+  const totEl  = document.getElementById('gTotN');
+  const caps   = track.querySelectorAll('.gal-cap');
 
-// Build pips
-const pipsEl=document.getElementById('gPips');
-document.getElementById('gTotN').textContent=TOTAL;
-cards.forEach((_,i)=>{ const p=document.createElement('div'); p.className='pip'+(i===0?' on':''); pipsEl.appendChild(p); });
-const pips=pipsEl.querySelectorAll('.pip');
+  totEl.textContent = N;
 
-function gpos(ci,ai){
-  const d=((ci-ai)%TOTAL+TOTAL)%TOTAL;
-  const dm=d<=TOTAL/2?d:d-TOTAL;
-  if(dm===0)  return '0';
-  if(dm===1)  return '1';
-  if(dm===2)  return '2';
-  if(dm===-1) return '-1';
-  if(dm===-2) return '-2';
-  return dm>0?'hr':'hl';
-}
-function updGal(nc){
-  if(busy)return; busy=true;
-  cur=((nc%TOTAL)+TOTAL)%TOTAL;
-  cards.forEach((c,i)=>c.dataset.p=gpos(i,cur));
-  pips.forEach((p,i)=>p.classList.toggle('on',i===cur));
-  document.getElementById('gCurN').textContent=cur+1;
-  setTimeout(()=>busy=false,520);
-}
-function galNext(){ updGal(cur+1); }
-function galPrev(){ updGal(cur-1); }
-function ccClick(i){
-  if(i===cur){ openLB(cards[i].querySelector('img')?.src||''); }
-  else{ const p=gpos(i,cur); (p==='1'||p==='2')?galNext():galPrev(); }
-}
+  // Build pips
+  for(let i=0;i<N;i++){
+    const p = document.createElement('div');
+    p.className = 'pip' + (i===0?' on':'');
+    pipsEl.appendChild(p);
+  }
+  const pips = pipsEl.querySelectorAll('.pip');
 
-// Touch swipe on stage
-const stg=document.getElementById('cstage');
-let sx=0,sy=0;
-stg.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
-stg.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-sx;
-  const dy=Math.abs(e.changedTouches[0].clientY-sy);
-  if(Math.abs(dx)>36&&Math.abs(dx)>dy){ dx<0?galNext():galPrev(); }
-},{passive:true});
+  let cur = 0;
+  let animating = false;
+
+  function getOffset(idx){ return idx * vp.offsetWidth; }
+
+  // Set track position instantly (no animation)
+  function setTrackX(x, animate){
+    track.style.transition = animate ? 'transform .42s cubic-bezier(.4,0,.2,1)' : 'none';
+    track.style.transform  = `translateX(${-x}px)`;
+  }
+
+  function goTo(idx, animate){
+    idx = Math.max(0, Math.min(N-1, idx));
+    cur = idx;
+    setTrackX(getOffset(idx), animate !== false);
+    pips.forEach((p,i) => p.classList.toggle('on', i===idx));
+    curEl.textContent = idx + 1;
+    if(animate !== false){ animating = true; setTimeout(()=>animating=false, 450); }
+  }
+
+  function galNext(){ if(!animating && cur < N-1) goTo(cur+1, true); }
+  function galPrev(){ if(!animating && cur > 0)   goTo(cur-1, true); }
+
+  document.getElementById('galNextBtn').addEventListener('click', galNext);
+  document.getElementById('galPrevBtn').addEventListener('click', galPrev);
+
+  // Touch/swipe — drag the track directly
+  let tx0=0, ty0=0, startX=0, isDragging=false, hasMoved=false;
+
+  function onStart(clientX, clientY){
+    tx0 = clientX;
+    ty0 = clientY;
+    startX = getOffset(cur);
+    isDragging = true;
+    hasMoved   = false;
+    track.style.transition = 'none';
+  }
+
+  function onMove(clientX, clientY){
+    if(!isDragging) return;
+    const dx = clientX - tx0;
+    const dy = clientY - ty0;
+    // If mostly vertical, abort drag to allow page scroll
+    if(!hasMoved && Math.abs(dy) > Math.abs(dx) + 6){
+      isDragging = false; return;
+    }
+    if(Math.abs(dx) > 4) hasMoved = true;
+    if(!hasMoved) return;
+    // Rubber band at edges
+    let newX = startX - dx;
+    if(newX < 0)               newX = newX * 0.25;
+    if(newX > getOffset(N-1))  newX = getOffset(N-1) + (newX - getOffset(N-1)) * 0.25;
+    track.style.transform = `translateX(${-newX}px)`;
+  }
+
+  function onEnd(clientX){
+    if(!isDragging) return;
+    isDragging = false;
+    const dx = clientX - tx0;
+    if(Math.abs(dx) > 44){
+      dx < 0 ? goTo(cur+1, true) : goTo(cur-1, true);
+    } else {
+      goTo(cur, true); // snap back
+      // tap = open lightbox only if barely moved
+      if(!hasMoved){
+        const img = slides[cur].querySelector('img');
+        const cap = slides[cur].querySelector('.gal-cap');
+        if(img && img.src && !img.src.endsWith('undefined'))
+          openLB(img.src, cap ? cap.textContent : '');
+      }
+    }
+  }
+
+  vp.addEventListener('touchstart', e=>{
+    onStart(e.touches[0].clientX, e.touches[0].clientY);
+  },{passive:true});
+  vp.addEventListener('touchmove', e=>{
+    onMove(e.touches[0].clientX, e.touches[0].clientY);
+  },{passive:true});
+  vp.addEventListener('touchend', e=>{
+    onEnd(e.changedTouches[0].clientX);
+  },{passive:true});
+
+  // Recalculate on resize
+  window.addEventListener('resize', ()=>{ goTo(cur, false); }, {passive:true});
+
+  // Init position
+  goTo(0, false);
+})();
 
 /* ── LIGHTBOX ─────────────────────────── */
-function openLB(src){ if(!src)return; document.getElementById('lb-img').src=src; document.getElementById('lb').classList.add('on'); document.body.style.overflow='hidden'; }
-function closeLB(){ document.getElementById('lb').classList.remove('on'); document.body.style.overflow=''; }
+function openLB(src, cap){
+  if(!src || src.includes('undefined')) return;
+  const img = document.getElementById('lb-img');
+  const capEl = document.getElementById('lb-cap');
+  img.src = src;
+  capEl.textContent = cap || '';
+  document.getElementById('lb').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeLB(){
+  document.getElementById('lb').classList.remove('on');
+  document.body.style.overflow='';
+}
+// Swipe down to close
 let lby=0;
 document.getElementById('lb').addEventListener('touchstart',e=>{lby=e.touches[0].clientY;},{passive:true});
-document.getElementById('lb').addEventListener('touchend',e=>{ if(e.changedTouches[0].clientY-lby>60)closeLB(); },{passive:true});
+document.getElementById('lb').addEventListener('touchend',e=>{ if(e.changedTouches[0].clientY-lby>60) closeLB(); },{passive:true});
+// Tap background to close
+document.getElementById('lb').addEventListener('click',e=>{ if(e.target===document.getElementById('lb')) closeLB(); });
 
 /* ── SCROLL REVEAL ────────────────────── */
 const obs=new IntersectionObserver(entries=>entries.forEach((e,i)=>{
