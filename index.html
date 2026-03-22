@@ -398,128 +398,159 @@
   }
 
   /* ══════════════════════════════════════
-     LOVE LETTER  + FLOATING PHOTOS
+     LOVE LETTER — photo strip above card
   ══════════════════════════════════════ */
   #letter {
-    padding:80px 20px 80px;
+    padding:80px 20px;
     background:linear-gradient(170deg, var(--dark2) 0%, var(--dark3) 48%, var(--dark2) 100%);
     position:relative; overflow:hidden;
   }
-  /* Floating photo decorations */
-  .fp {
-    position:absolute; border-radius:16px; overflow:hidden;
-    box-shadow:0 12px 40px rgba(0,0,0,.7), 0 0 0 2px rgba(232,160,180,.2);
-    pointer-events:none; z-index:0;
-  }
-  .fp img { width:100%; height:100%; object-fit:cover; }
-  .fp::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(232,160,180,.1), transparent); }
-
-  /* Position each floating photo */
-  .fp1 { width:90px; height:110px; top:40px; right:-18px; transform:rotate(8deg); animation:floatPhoto1 6s ease-in-out infinite; }
-  .fp2 { width:80px; height:96px; bottom:120px; left:-14px; transform:rotate(-7deg); animation:floatPhoto2 7s ease-in-out infinite; }
-  .fp3 { width:70px; height:84px; top:50%; right:-10px; transform:translateY(-50%) rotate(5deg); animation:floatPhoto3 8s ease-in-out infinite; }
-
-  @keyframes floatPhoto1 { 0%,100%{transform:rotate(8deg) translateY(0);} 50%{transform:rotate(8deg) translateY(-10px);} }
-  @keyframes floatPhoto2 { 0%,100%{transform:rotate(-7deg) translateY(0);} 50%{transform:rotate(-7deg) translateY(-12px);} }
-  @keyframes floatPhoto3 { 0%,100%{transform:translateY(-50%) rotate(5deg) translateX(0);} 50%{transform:translateY(calc(-50% - 8px)) rotate(5deg) translateX(-4px);} }
-
   .letter-inner { max-width:500px; margin:0 auto; text-align:center; position:relative; z-index:1; }
-  .letter-card {
-    background:rgba(255,255,255,.03); border:1px solid rgba(232,160,180,.16);
-    border-radius:24px; padding:40px 28px 36px;
-    position:relative; overflow:hidden;
-    box-shadow:0 0 80px rgba(192,82,111,.12), inset 0 0 30px rgba(8,4,8,.4);
-  }
+  /* Three floating photo frames above letter */
+  .letter-photo-strip { display:flex; gap:10px; justify-content:center; margin-bottom:30px; }
+  .lp-frame { border-radius:16px; overflow:hidden; flex-shrink:0; position:relative; box-shadow:0 12px 36px rgba(0,0,0,.7), 0 0 0 2px rgba(232,160,180,.22); }
+  .lp-frame.big   { width:128px; height:158px; animation:lfloat1 6s ease-in-out infinite; }
+  .lp-frame.small { width:92px;  height:112px; margin-top:22px; }
+  .lp-frame:nth-child(2){ animation:lfloat2 7s ease-in-out infinite; animation-delay:.6s; }
+  .lp-frame:nth-child(3){ animation:lfloat1 8s ease-in-out infinite; animation-delay:1.2s; }
+  @keyframes lfloat1 { 0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-10px) rotate(-2deg);} }
+  @keyframes lfloat2 { 0%,100%{transform:translateY(0) rotate(2deg);} 50%{transform:translateY(-14px) rotate(2deg);} }
+  .lp-frame img { width:100%; height:100%; object-fit:cover; display:block; }
+  .lp-frame::after { content:''; position:absolute; inset:0; background:linear-gradient(to top, rgba(8,4,8,.4) 0%, transparent 50%); }
+  .lp-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:10px; }
+  .letter-card { background:rgba(255,255,255,.03); border:1px solid rgba(232,160,180,.16); border-radius:24px; padding:36px 26px 30px; position:relative; overflow:hidden; box-shadow:0 0 80px rgba(192,82,111,.12), inset 0 0 30px rgba(8,4,8,.4); }
   .letter-card::before { content:'\201C'; position:absolute; top:2px; left:14px; font-family:'Playfair Display',serif; font-size:90px; color:var(--rose); opacity:.1; line-height:1; pointer-events:none; }
   .letter-card::after  { content:'\201D'; position:absolute; bottom:-28px; right:14px; font-family:'Playfair Display',serif; font-size:90px; color:var(--rose); opacity:.08; line-height:1; pointer-events:none; }
-
-  /* Petal deco inside card */
   .card-petal { position:absolute; font-size:14px; opacity:.18; pointer-events:none; }
   .cp1 { top:16px; right:20px; transform:rotate(20deg); }
   .cp2 { bottom:30px; left:18px; transform:rotate(-15deg); }
-
   .letter-to { font-family:'Dancing Script',cursive; font-size:20px; color:var(--rose); margin-bottom:18px; }
   .letter-text { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; font-style:italic; color:var(--light); line-height:2; text-align:left; }
   .letter-text strong { font-weight:400; color:var(--rose2); font-style:normal; }
   .letter-sig { margin-top:26px; font-family:'Dancing Script',cursive; font-size:26px; color:var(--rose); text-align:right; line-height:1.4; }
   .letter-date { font-size:10px; letter-spacing:.16em; color:var(--muted); margin-top:5px; text-transform:uppercase; text-align:right; }
-
-  /* Decorative divider */
   .rose-divider { text-align:center; margin:40px 0; font-size:18px; letter-spacing:8px; color:var(--rose); opacity:.55; }
 
   /* ══════════════════════════════════════
-     POEM SECTION  + FLOATING PHOTOS
+     POEM — blurred photo background
   ══════════════════════════════════════ */
-  #poem {
-    padding:72px 20px;
-    background:var(--dark);
-    position:relative; overflow:hidden;
-  }
-  /* Floating photos for poem */
-  .fpp { position:absolute; border-radius:14px; overflow:hidden; box-shadow:0 10px 34px rgba(0,0,0,.65), 0 0 0 2px rgba(212,175,122,.2); pointer-events:none; z-index:0; }
-  .fpp img { width:100%; height:100%; object-fit:cover; }
-  .fpp4 { width:82px; height:100px; top:30px; left:-12px; transform:rotate(-9deg); animation:floatPhoto2 6.5s ease-in-out infinite; }
-  .fpp5 { width:74px; height:90px; bottom:40px; right:-10px; transform:rotate(10deg); animation:floatPhoto1 7.5s ease-in-out infinite; }
-
-  .poem-inner { max-width:420px; margin:0 auto; text-align:center; position:relative; z-index:1; }
-  .poem-card {
-    background:rgba(255,255,255,.025); border:1px solid rgba(212,175,122,.15);
-    border-radius:22px; padding:38px 26px;
-    position:relative; overflow:hidden;
-  }
-  .poem-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(212,175,122,.07), transparent 60%); pointer-events:none; }
+  #poem { padding:0; position:relative; overflow:hidden; }
+  .poem-bg { position:absolute; inset:0; background:var(--dark2); }
+  .poem-bg img { width:100%; height:100%; object-fit:cover; opacity:.2; filter:blur(6px) saturate(.6); transform:scale(1.08); }
+  .poem-bg::after { content:''; position:absolute; inset:0; background:linear-gradient(160deg, rgba(8,4,8,.78) 0%, rgba(38,16,24,.88) 100%); }
+  .poem-inner { max-width:420px; margin:0 auto; text-align:center; position:relative; z-index:1; padding:80px 20px; }
+  .poem-card { background:rgba(255,255,255,.05); border:1px solid rgba(212,175,122,.18); border-radius:22px; padding:38px 26px; position:relative; overflow:hidden; }
+  .poem-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(212,175,122,.09), transparent 60%); pointer-events:none; }
   .poem-lines { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:300; font-style:italic; color:var(--light); line-height:2.1; }
   .poem-lines strong { color:var(--gold2); font-style:normal; font-weight:400; }
   .poem-author { margin-top:22px; font-family:'Dancing Script',cursive; font-size:20px; color:var(--gold); }
 
   /* ══════════════════════════════════════
-     REASONS  — horizontal scroll cards
+     REASONS — photo banner top of card
   ══════════════════════════════════════ */
   #reasons { padding:72px 0; background:var(--dark2); }
   .sec-header-center { text-align:center; margin-bottom:28px; padding:0 20px; }
   .reasons-scroll { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding:4px 20px 16px; scrollbar-width:none; }
   .reasons-scroll::-webkit-scrollbar { display:none; }
-  .reason-card {
-    scroll-snap-align:center; flex:0 0 76vw; max-width:286px;
-    background:rgba(255,255,255,.025); border:1px solid rgba(232,160,180,.13);
-    border-radius:22px; padding:30px 22px; text-align:center; position:relative; overflow:hidden;
-  }
-  .reason-card::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 0%, rgba(192,82,111,.1), transparent 68%); }
-  .reason-icon { font-size:36px; margin-bottom:12px; display:block; }
-  .reason-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--rose); margin-bottom:9px; }
-  .reason-text { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--muted); line-height:1.75; }
+  .reason-card { scroll-snap-align:center; flex:0 0 72vw; max-width:270px; background:rgba(255,255,255,.025); border:1px solid rgba(232,160,180,.13); border-radius:22px; overflow:hidden; text-align:center; position:relative; }
+  .reason-photo { width:100%; height:130px; position:relative; overflow:hidden; }
+  .reason-photo img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
+  .reason-card:active .reason-photo img { transform:scale(1.08); }
+  .reason-photo::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 30%, rgba(8,4,8,.9) 100%); }
+  .reason-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; font-size:30px; opacity:.3; }
+  .reason-badge { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); width:36px; height:36px; border-radius:50%; background:var(--dark2); border:2px solid var(--rose); display:flex; align-items:center; justify-content:center; font-size:17px; z-index:2; box-shadow:0 4px 14px rgba(192,82,111,.4); }
+  .reason-body { padding:24px 18px 22px; }
+  .reason-title { font-family:'Playfair Display',serif; font-size:16px; color:var(--rose); margin-bottom:8px; }
+  .reason-text { font-family:'Cormorant Garamond',serif; font-size:14px; color:var(--muted); line-height:1.7; }
 
   /* ══════════════════════════════════════
-     TIMELINE
+     TIMELINE — photo at top of each card
   ══════════════════════════════════════ */
   #timeline { padding:72px 20px; background:var(--dark); }
   .tl-list { position:relative; padding-left:28px; }
   .tl-line { position:absolute; left:7px; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, transparent, var(--rose) 20%, var(--rose) 80%, transparent); }
-  .tl-item { position:relative; padding-left:26px; margin-bottom:30px; }
-  .tl-dot { position:absolute; left:-23px; top:6px; width:14px; height:14px; border-radius:50%; background:var(--dark); border:2px solid var(--rose); box-shadow:0 0 10px rgba(232,160,180,.45); }
-  .tl-content { background:rgba(255,255,255,.025); border:1px solid rgba(232,160,180,.1); border-radius:17px; padding:18px 18px; transition:border-color .3s, box-shadow .3s; }
-  .tl-content:active { border-color:rgba(232,160,180,.3); box-shadow:0 6px 24px rgba(192,82,111,.15); }
+  .tl-item { position:relative; padding-left:26px; margin-bottom:36px; }
+  .tl-dot { position:absolute; left:-23px; top:7px; width:14px; height:14px; border-radius:50%; background:var(--dark); border:2px solid var(--rose); box-shadow:0 0 10px rgba(232,160,180,.45); }
+  .tl-content { background:rgba(255,255,255,.025); border:1px solid rgba(232,160,180,.1); border-radius:18px; overflow:hidden; }
+  .tl-photo { width:100%; height:116px; position:relative; overflow:hidden; }
+  .tl-photo img { width:100%; height:100%; object-fit:cover; }
+  .tl-photo::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(8,4,8,.85) 100%); }
+  .tl-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; font-size:24px; opacity:.3; }
+  .tl-body { padding:16px 18px 18px; }
   .tl-date { font-size:10px; letter-spacing:.22em; color:var(--gold); text-transform:uppercase; margin-bottom:4px; }
   .tl-title { font-family:'Playfair Display',serif; font-size:16px; color:var(--light); margin-bottom:6px; }
   .tl-desc { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--muted); line-height:1.7; }
-  .tl-emoji { font-size:20px; margin-bottom:7px; display:block; }
+  .tl-emoji { font-size:18px; margin-bottom:6px; display:block; }
 
   /* ══════════════════════════════════════
-     PROMISE
+     MOOD — blurred bg + round photo
   ══════════════════════════════════════ */
-  #promise {
-    padding:72px 24px 88px;
-    background:radial-gradient(ellipse 110% 110% at 50% 50%, #260e18 0%, #080408 80%);
-    text-align:center;
-  }
+  #mood { padding:80px 24px; position:relative; overflow:hidden; text-align:center; }
+  .mood-photo-bg { position:absolute; inset:0; }
+  .mood-photo-bg img { width:100%; height:100%; object-fit:cover; opacity:.18; filter:blur(10px) saturate(.5); transform:scale(1.1); }
+  .mood-photo-bg::after { content:''; position:absolute; inset:0; background:linear-gradient(160deg, rgba(44,8,28,.9), rgba(8,4,8,.94)); }
+  .mood-content { position:relative; z-index:1; }
+  .mood-icon { font-size:52px; margin-bottom:20px; display:block; animation:splashBeat 2s ease-in-out infinite; }
+  .mood-quote { font-family:'Playfair Display',serif; font-size:clamp(22px,5.5vw,36px); font-style:italic; color:var(--light); line-height:1.55; max-width:340px; margin:0 auto 18px; text-shadow:0 2px 20px rgba(232,160,180,.2); }
+  .mood-quote em { color:var(--rose); font-style:normal; }
+  .mood-attr { font-family:'Dancing Script',cursive; font-size:20px; color:var(--gold); }
+  .mood-photo-frame { width:88px; height:88px; border-radius:50%; overflow:hidden; margin:26px auto 0; border:3px solid rgba(232,160,180,.4); box-shadow:0 0 0 6px rgba(232,160,180,.1), 0 10px 30px rgba(0,0,0,.6); }
+  .mood-photo-frame img { width:100%; height:100%; object-fit:cover; }
+  .mood-star { position:absolute; color:var(--rose); pointer-events:none; animation:twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0;transform:scale(.5);} 50%{opacity:.5;transform:scale(1);} }
+
+  /* ══════════════════════════════════════
+     OUR SONG — photo inside vinyl + bubbles
+  ══════════════════════════════════════ */
+  #our-song { padding:72px 24px; background:var(--dark); text-align:center; position:relative; overflow:hidden; }
+  .song-card { max-width:340px; margin:0 auto; background:rgba(255,255,255,.03); border:1px solid rgba(232,160,180,.18); border-radius:28px; padding:36px 28px; position:relative; overflow:hidden; box-shadow:0 0 60px rgba(192,82,111,.12); }
+  .song-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(232,160,180,.08), transparent 65%); pointer-events:none; }
+  .vinyl-wrap { position:relative; width:120px; height:120px; margin:0 auto 20px; }
+  .vinyl-disc { width:120px; height:120px; border-radius:50%; overflow:hidden; background:conic-gradient(from 0deg, #1a0812, #3a1428, #1a0812, #2e1020, #1a0812); border:2px solid rgba(232,160,180,.3); box-shadow:0 8px 32px rgba(0,0,0,.7), 0 0 0 1px rgba(232,160,180,.15); animation:spin360 4s linear infinite paused; position:relative; }
+  .vinyl-disc.playing { animation-play-state:running; }
+  @keyframes spin360 { to{transform:rotate(360deg);} }
+  .vinyl-disc img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%; opacity:.45; }
+  .vinyl-center { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; }
+  .vinyl-dot { width:22px; height:22px; border-radius:50%; background:var(--dark2); border:2px solid rgba(232,160,180,.5); box-shadow:0 0 10px rgba(232,160,180,.3); }
+  .song-photo-strip { display:flex; gap:8px; justify-content:center; margin-bottom:18px; }
+  .spb { width:44px; height:44px; border-radius:50%; overflow:hidden; border:2px solid rgba(232,160,180,.3); box-shadow:0 4px 12px rgba(0,0,0,.5); flex-shrink:0; }
+  .spb img { width:100%; height:100%; object-fit:cover; }
+  .spb-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; font-size:14px; opacity:.4; }
+  .waveform { display:flex; align-items:center; justify-content:center; gap:3px; height:36px; margin-bottom:20px; }
+  .wbar { width:3px; border-radius:3px; background:linear-gradient(to top, var(--deep-rose), var(--rose)); animation:waveAnim 1s ease-in-out infinite; transform-origin:bottom; }
+  .wbar:nth-child(1){ height:12px; animation-delay:0s; } .wbar:nth-child(2){ height:24px; animation-delay:.1s; } .wbar:nth-child(3){ height:36px; animation-delay:.2s; } .wbar:nth-child(4){ height:20px; animation-delay:.3s; } .wbar:nth-child(5){ height:30px; animation-delay:.4s; } .wbar:nth-child(6){ height:14px; animation-delay:.5s; } .wbar:nth-child(7){ height:28px; animation-delay:.6s; } .wbar:nth-child(8){ height:18px; animation-delay:.7s; } .wbar:nth-child(9){ height:34px; animation-delay:.8s; }
+  @keyframes waveAnim { 0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);} }
+  .song-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--light); margin-bottom:6px; }
+  .song-sub   { font-family:'Cormorant Garamond',serif; font-size:14px; color:var(--muted); font-style:italic; }
+  .song-names { margin-top:18px; font-family:'Dancing Script',cursive; font-size:18px; color:var(--rose); }
+
+  /* ══════════════════════════════════════
+     MEMORY — photo-background cards
+  ══════════════════════════════════════ */
+  #memories { padding:72px 20px; background:linear-gradient(170deg, var(--dark2), var(--dark3) 50%, var(--dark2)); }
+  .mem-header { text-align:center; margin-bottom:36px; }
+  .mem-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:420px; margin:0 auto; }
+  .mem-card { border-radius:18px; overflow:hidden; position:relative; cursor:pointer; min-height:150px; box-shadow:0 8px 24px rgba(0,0,0,.55); transition:transform .3s cubic-bezier(.34,1.2,.64,1), box-shadow .3s; }
+  .mem-card:active { transform:scale(.95); box-shadow:0 12px 32px rgba(192,82,111,.28); }
+  .mem-photo { position:absolute; inset:0; }
+  .mem-photo img { width:100%; height:100%; object-fit:cover; }
+  .mem-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; font-size:32px; opacity:.28; }
+  .mem-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(8,4,8,.93) 0%, rgba(8,4,8,.35) 50%, transparent 75%); }
+  .mem-body { position:absolute; bottom:0; left:0; right:0; padding:12px; z-index:2; }
+  .mem-emoji { font-size:20px; display:block; margin-bottom:3px; }
+  .mem-label { font-family:'Playfair Display',serif; font-size:12px; color:var(--rose); margin-bottom:3px; line-height:1.2; }
+  .mem-text  { font-family:'Cormorant Garamond',serif; font-size:11px; color:rgba(201,168,184,.72); line-height:1.4; }
+
+  /* ══════════════════════════════════════
+     PROMISE — couple photo above ring
+  ══════════════════════════════════════ */
+  #promise { padding:72px 24px 88px; background:radial-gradient(ellipse 110% 110% at 50% 50%, #260e18 0%, #080408 80%); text-align:center; }
   .promise-inner { max-width:420px; margin:0 auto; }
-  .promise-ring {
-    width:118px; height:118px; border-radius:50%;
-    border:1px solid rgba(232,160,180,.28);
-    display:flex; align-items:center; justify-content:center;
-    margin:0 auto 32px; position:relative;
-    animation:rotateSlow 10s linear infinite;
-  }
+  .promise-photo { width:110px; height:110px; border-radius:50%; overflow:hidden; margin:0 auto 26px; border:3px solid var(--rose); box-shadow:0 0 0 7px rgba(232,160,180,.12), 0 16px 44px rgba(192,82,111,.4); }
+  .promise-photo img { width:100%; height:100%; object-fit:cover; }
+  .promise-ph { width:100%; height:100%; background:var(--dark3); display:flex; align-items:center; justify-content:center; font-size:30px; opacity:.4; }
+  .promise-ring { width:118px; height:118px; border-radius:50%; border:1px solid rgba(232,160,180,.28); display:flex; align-items:center; justify-content:center; margin:0 auto 32px; position:relative; animation:rotateSlow 10s linear infinite; }
+  @keyframes rotateSlow { to{transform:rotate(360deg);} }
   .promise-ring::before { content:''; position:absolute; inset:9px; border-radius:50%; border:1px dashed rgba(232,160,180,.16); }
   .promise-ring-inner { font-size:44px; animation:rotateSlow 10s linear infinite reverse; }
   .promise-names { font-family:'Dancing Script',cursive; font-size:22px; color:var(--rose); margin-bottom:28px; text-shadow:0 0 20px rgba(232,160,180,.4); }
@@ -528,7 +559,7 @@
   .promise-list li:last-child { border-bottom:none; }
   .promise-list li .tick { color:var(--rose); font-size:15px; flex-shrink:0; }
 
-  /* ══════════════════════════════════════
+    /* ══════════════════════════════════════
      FOOTER
   ══════════════════════════════════════ */
   footer {
@@ -1257,16 +1288,28 @@
 <!-- ══ LOVE LETTER ════════════════════════════════ -->
 <section id="letter">
   <div class="letter-inner">
-    <div class="reveal" style="margin-bottom:32px">
+    <div class="reveal" style="margin-bottom:28px">
       <span class="sec-tag">হৃদয়ের কথা</span>
       <h2 class="sec-title">চাঁদনীর জন্য <span>একটি চিঠি</span></h2>
       <div class="divider"></div>
     </div>
+
+    <!-- Three floating photo frames -->
+    <div class="letter-photo-strip reveal">
+      <div class="lp-frame small">
+        <img src="photo1.jpg" alt="" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=lp-ph>📸</div>')"/>
+      </div>
+      <div class="lp-frame big">
+        <img src="gf-photo.jpg" alt="চাঁদনী" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=lp-ph>💁‍♀️</div>')"/>
+      </div>
+      <div class="lp-frame small">
+        <img src="photo2.jpg" alt="" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=lp-ph>📸</div>')"/>
+      </div>
+    </div>
+
     <div class="letter-card reveal">
       <span class="card-petal cp1">🌸</span>
       <span class="card-petal cp2">🌹</span>
-
-      <!-- ✏️ চিঠির ভেতরের লেখা পরিবর্তন করো -->
       <div class="letter-to">প্রিয় চাঁদনী,</div>
       <p class="letter-text">
         তুমি জানো, যেদিন তোমাকে প্রথম দেখেছিলাম —
@@ -1279,19 +1322,19 @@
         তুমি আমার শান্তি, আমার শক্তি,
         আমার সবচেয়ে সুন্দর অনুভূতি।
       </p>
-      <div class="letter-sig">
-        শুধুই তোমার,<br>শাওন 💕
-      </div>
-      <!-- ✏️ তারিখ পরিবর্তন করো -->
+      <div class="letter-sig">শুধুই তোমার,<br>শাওন 💕</div>
       <div class="letter-date">[তারিখ লিখো]</div>
     </div>
   </div>
-
   <div class="rose-divider reveal">🌹 ✦ 🌹 ✦ 🌹</div>
 </section>
 
 <!-- ══ POEM ══════════════════════════════════════ -->
 <section id="poem">
+  <!-- Blurred photo background -->
+  <div class="poem-bg">
+    <img src="photo3.jpg" alt="" onerror="this.style.opacity=0"/>
+  </div>
   <div class="poem-inner">
     <div class="reveal" style="margin-bottom:32px">
       <span class="sec-tag">ভালোবাসার কবিতা</span>
@@ -1321,13 +1364,36 @@
     <div class="divider"></div>
   </div>
   <div class="reasons-scroll">
-    <!-- ✏️ কারণগুলো কাস্টমাইজ করো -->
-    <div class="reason-card reveal"><span class="reason-icon">🌙</span><div class="reason-title">চাঁদের মতো</div><p class="reason-text">চাঁদনীর হাসি দেখলে মনে হয় পূর্ণিমার চাঁদ উঠেছে। আমার অন্ধকার দূর হয়ে যায়।</p></div>
-    <div class="reason-card reveal"><span class="reason-icon">💬</span><div class="reason-title">তোমার কণ্ঠ</div><p class="reason-text">তোমার কথা শুনলে সব দুশ্চিন্তা মিলিয়ে যায়। তোমার গলা আমার প্রিয় সঙ্গীত।</p></div>
-    <div class="reason-card reveal"><span class="reason-icon">🌸</span><div class="reason-title">তোমার মন</div><p class="reason-text">ভেতর থেকে তুমি কতটা সুন্দর — সেটা শুধু শাওনই বোঝে।</p></div>
-    <div class="reason-card reveal"><span class="reason-icon">🤝</span><div class="reason-title">তোমার সঙ্গ</div><p class="reason-text">তোমার সাথে থাকলে সময় থেমে যায়। তুমিই আমার সেরা বন্ধু।</p></div>
-    <div class="reason-card reveal"><span class="reason-icon">💪</span><div class="reason-title">তোমার শক্তি</div><p class="reason-text">যখন শাওন দুর্বল হয়, চাঁদনী তখন তার শক্তি হয়ে ওঠে।</p></div>
-    <div class="reason-card reveal"><span class="reason-icon">✨</span><div class="reason-title">তুমি চাঁদনী</div><p class="reason-text">শুধু তুমি হওয়াটাই যথেষ্ট। তোমার মতো কেউ নেই এই পৃথিবীতে।</p></div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo1.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">🌙</div></div>
+      <div class="reason-badge">🌙</div>
+      <div class="reason-body"><div class="reason-title">চাঁদের মতো</div><p class="reason-text">চাঁদনীর হাসি দেখলে মনে হয় পূর্ণিমার চাঁদ উঠেছে। আমার অন্ধকার দূর হয়ে যায়।</p></div>
+    </div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo2.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">💬</div></div>
+      <div class="reason-badge">💬</div>
+      <div class="reason-body"><div class="reason-title">তোমার কণ্ঠ</div><p class="reason-text">তোমার কথা শুনলে সব দুশ্চিন্তা মিলিয়ে যায়। তোমার গলা আমার প্রিয় সঙ্গীত।</p></div>
+    </div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo3.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">🌸</div></div>
+      <div class="reason-badge">🌸</div>
+      <div class="reason-body"><div class="reason-title">তোমার মন</div><p class="reason-text">ভেতর থেকে তুমি কতটা সুন্দর — সেটা শুধু শাওনই বোঝে।</p></div>
+    </div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo4.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">🤝</div></div>
+      <div class="reason-badge">🤝</div>
+      <div class="reason-body"><div class="reason-title">তোমার সঙ্গ</div><p class="reason-text">তোমার সাথে থাকলে সময় থেমে যায়। তুমিই আমার সেরা বন্ধু।</p></div>
+    </div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo5.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">💪</div></div>
+      <div class="reason-badge">💪</div>
+      <div class="reason-body"><div class="reason-title">তোমার শক্তি</div><p class="reason-text">যখন শাওন দুর্বল হয়, চাঁদনী তখন তার শক্তি হয়ে ওঠে।</p></div>
+    </div>
+    <div class="reason-card reveal">
+      <div class="reason-photo"><img src="photo6.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.reason-ph').style.display='flex'"/><div class="reason-ph" style="display:none">✨</div></div>
+      <div class="reason-badge">✨</div>
+      <div class="reason-body"><div class="reason-title">তুমি চাঁদনী</div><p class="reason-text">শুধু তুমি হওয়াটাই যথেষ্ট। তোমার মতো কেউ নেই এই পৃথিবীতে।</p></div>
+    </div>
   </div>
 </section>
 
@@ -1341,29 +1407,65 @@
   <div class="tl-list">
     <div class="tl-line"></div>
     <!-- ✏️ তারিখ ও ঘটনা কাস্টমাইজ করো -->
-    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-content"><span class="tl-emoji">👀</span><div class="tl-date">[প্রথম দেখার তারিখ]</div><div class="tl-title">প্রথম দেখা</div><p class="tl-desc">সেই মুহূর্তে শাওন বুঝেছিল — চাঁদনী অন্যরকম।</p></div></div>
-    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-content"><span class="tl-emoji">💬</span><div class="tl-date">[প্রথম কথার তারিখ]</div><div class="tl-title">প্রথম কথা</div><p class="tl-desc">প্রথমবার কথা বলার পর থেকেই জানতাম — এই মানুষটা আলাদা।</p></div></div>
-    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-content"><span class="tl-emoji">❤️</span><div class="tl-date">[সম্পর্কের তারিখ]</div><div class="tl-title">শাওন ও চাঁদনীর শুরু</div><p class="tl-desc">এই দিনটা আমাদের জীবনের সবচেয়ে সুন্দর দিন। চাঁদনী হ্যাঁ বলেছিল।</p></div></div>
-    <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-content"><span class="tl-emoji">🌹</span><div class="tl-date">[বিশেষ দিনের তারিখ]</div><div class="tl-title">বিশেষ একটি দিন</div><p class="tl-desc">সেদিনের স্মৃতি চিরকাল থাকবে।</p></div></div>
-    <div class="tl-item reveal"><div class="tl-dot" style="background:var(--rose);border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,122,.55)"></div><div class="tl-content"><span class="tl-emoji">🌟</span><div class="tl-date">আজ ও চিরকাল</div><div class="tl-title">চলতে থাকুক…</div><p class="tl-desc">শাওন ও চাঁদনীর গল্প এখনও লেখা হচ্ছে। প্রতিটি নতুন দিন নতুন অধ্যায়।</p></div></div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-photo"><img src="photo1.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.tl-ph').style.display='flex'"/><div class="tl-ph" style="display:none">👀</div></div>
+        <div class="tl-body"><span class="tl-emoji">👀</span><div class="tl-date">[প্রথম দেখার তারিখ]</div><div class="tl-title">প্রথম দেখা</div><p class="tl-desc">সেই মুহূর্তে শাওন বুঝেছিল — চাঁদনী অন্যরকম।</p></div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-photo"><img src="photo2.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.tl-ph').style.display='flex'"/><div class="tl-ph" style="display:none">💬</div></div>
+        <div class="tl-body"><span class="tl-emoji">💬</span><div class="tl-date">[প্রথম কথার তারিখ]</div><div class="tl-title">প্রথম কথা</div><p class="tl-desc">প্রথমবার কথা বলার পর থেকেই জানতাম — এই মানুষটা আলাদা।</p></div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-photo"><img src="photo3.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.tl-ph').style.display='flex'"/><div class="tl-ph" style="display:none">❤️</div></div>
+        <div class="tl-body"><span class="tl-emoji">❤️</span><div class="tl-date">[সম্পর্কের তারিখ]</div><div class="tl-title">শাওন ও চাঁদনীর শুরু</div><p class="tl-desc">এই দিনটা আমাদের জীবনের সবচেয়ে সুন্দর দিন। চাঁদনী হ্যাঁ বলেছিল।</p></div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-photo"><img src="photo4.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.tl-ph').style.display='flex'"/><div class="tl-ph" style="display:none">🌹</div></div>
+        <div class="tl-body"><span class="tl-emoji">🌹</span><div class="tl-date">[বিশেষ দিনের তারিখ]</div><div class="tl-title">বিশেষ একটি দিন</div><p class="tl-desc">সেদিনের স্মৃতি চিরকাল থাকবে।</p></div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="background:var(--rose);border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,122,.55)"></div>
+      <div class="tl-content">
+        <div class="tl-photo"><img src="photo5.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.tl-ph').style.display='flex'"/><div class="tl-ph" style="display:none">🌟</div></div>
+        <div class="tl-body"><span class="tl-emoji">🌟</span><div class="tl-date">আজ ও চিরকাল</div><div class="tl-title">চলতে থাকুক…</div><p class="tl-desc">শাওন ও চাঁদনীর গল্প এখনও লেখা হচ্ছে। প্রতিটি নতুন দিন নতুন অধ্যায়।</p></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ══ MOOD QUOTE ════════════════════════════════ -->
 <section id="mood">
+  <!-- Blurred photo background -->
+  <div class="mood-photo-bg">
+    <img src="photo6.jpg" alt="" onerror="this.style.opacity=0"/>
+  </div>
   <span class="mood-star" style="top:14%;left:7%;font-size:10px;animation-delay:0s">✦</span>
   <span class="mood-star" style="top:20%;right:9%;font-size:8px;animation-delay:1s">✦</span>
   <span class="mood-star" style="top:70%;left:5%;font-size:12px;animation-delay:2s">✦</span>
   <span class="mood-star" style="top:78%;right:8%;font-size:9px;animation-delay:.5s">✦</span>
-  <span class="mood-star" style="top:45%;left:92%;font-size:11px;animation-delay:1.5s">✦</span>
-
-  <div class="reveal">
+  <div class="mood-content reveal">
     <span class="mood-icon">🌙</span>
     <p class="mood-quote">
       "তুমি যখন হাসো,<br>পুরো পৃথিবীটা আমার কাছে<br>
       <em>চাঁদনীর আলোয়</em> ভরে যায়।"
     </p>
     <div class="mood-attr">— শাওন 💕</div>
+    <!-- Small round photo -->
+    <div class="mood-photo-frame">
+      <img src="gf-photo.jpg" alt="চাঁদনী" onerror="this.style.opacity='.3'"/>
+    </div>
   </div>
 </section>
 
@@ -1377,8 +1479,16 @@
   <div class="song-card reveal">
     <div class="vinyl-wrap">
       <div class="vinyl-disc" id="vinylDisc">
+        <!-- Couple photo inside spinning vinyl -->
+        <img src="my-photo.jpg" alt="" onerror="this.style.opacity=0"/>
         <div class="vinyl-center"><div class="vinyl-dot"></div></div>
       </div>
+    </div>
+    <!-- Photo bubbles: each person -->
+    <div class="song-photo-strip">
+      <div class="spb"><img src="my-photo.jpg" alt="শাওন" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=spb-ph>👤</div>')"/></div>
+      <div class="spb"><img src="photo1.jpg" alt="" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=spb-ph>💕</div>')"/></div>
+      <div class="spb"><img src="gf-photo.jpg" alt="চাঁদনী" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=spb-ph>💁‍♀️</div>')"/></div>
     </div>
     <div class="waveform">
       <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
@@ -1400,36 +1510,35 @@
     <div class="divider"></div>
   </div>
   <div class="mem-grid">
-    <!-- ✏️ লেবেল ও টেক্সট কাস্টমাইজ করো -->
     <div class="mem-card reveal">
-      <span class="mem-emoji">👀</span>
-      <div class="mem-label">প্রথম দেখা</div>
-      <div class="mem-text">সেই চোখের মিলন যা সব বদলে দিয়েছিল</div>
+      <div class="mem-photo"><img src="photo1.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">👀</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">👀</span><div class="mem-label">প্রথম দেখা</div><div class="mem-text">সেই চোখের মিলন যা সব বদলে দিয়েছিল</div></div>
     </div>
     <div class="mem-card reveal">
-      <span class="mem-emoji">💬</span>
-      <div class="mem-label">প্রথম কথা</div>
-      <div class="mem-text">সেই প্রথম কথাটাই হৃদয় ছুঁয়ে গিয়েছিল</div>
+      <div class="mem-photo"><img src="photo2.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">💬</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">💬</span><div class="mem-label">প্রথম কথা</div><div class="mem-text">সেই প্রথম কথাটাই হৃদয় ছুঁয়ে গিয়েছিল</div></div>
     </div>
     <div class="mem-card reveal">
-      <span class="mem-emoji">🌹</span>
-      <div class="mem-label">প্রথম ভালোবাসা</div>
-      <div class="mem-text">যেদিন শাওন মনের কথা বলেছিল</div>
+      <div class="mem-photo"><img src="photo3.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">🌹</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">🌹</span><div class="mem-label">প্রথম ভালোবাসা</div><div class="mem-text">যেদিন শাওন মনের কথা বলেছিল</div></div>
     </div>
     <div class="mem-card reveal">
-      <span class="mem-emoji">🌙</span>
-      <div class="mem-label">রাতের গল্প</div>
-      <div class="mem-text">চাঁদের আলোয় দু'জনার অনেক কথা</div>
+      <div class="mem-photo"><img src="photo4.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">🌙</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">🌙</span><div class="mem-label">রাতের গল্প</div><div class="mem-text">চাঁদের আলোয় দু'জনার অনেক কথা</div></div>
     </div>
     <div class="mem-card reveal">
-      <span class="mem-emoji">🎂</span>
-      <div class="mem-label">বিশেষ দিন</div>
-      <div class="mem-text">একসাথে উদযাপনের মুহূর্তগুলো</div>
+      <div class="mem-photo"><img src="photo5.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">🎂</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">🎂</span><div class="mem-label">বিশেষ দিন</div><div class="mem-text">একসাথে উদযাপনের মুহূর্তগুলো</div></div>
     </div>
     <div class="mem-card reveal">
-      <span class="mem-emoji">✈️</span>
-      <div class="mem-label">স্বপ্নের পরিকল্পনা</div>
-      <div class="mem-text">একদিন একসাথে পৃথিবী ঘুরব</div>
+      <div class="mem-photo"><img src="photo6.jpg" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.mem-ph').style.display='flex'"/><div class="mem-ph" style="display:none">✈️</div></div>
+      <div class="mem-overlay"></div>
+      <div class="mem-body"><span class="mem-emoji">✈️</span><div class="mem-label">স্বপ্নের পরিকল্পনা</div><div class="mem-text">একদিন একসাথে পৃথিবী ঘুরব</div></div>
     </div>
   </div>
 </section>
@@ -1438,6 +1547,11 @@
 <section id="promise">
   <div class="promise-inner">
     <div class="reveal"><span class="sec-tag">চিরকালের জন্য</span><h2 class="sec-title">শাওনের <span>প্রতিশ্রুতি</span></h2><div class="divider"></div></div>
+    <!-- Couple photo above ring -->
+    <div class="promise-photo reveal">
+      <img src="gf-photo.jpg" alt="চাঁদনী" onerror="this.style.display='none';this.parentElement.querySelector('.promise-ph').style.display='flex'"/>
+      <div class="promise-ph" style="display:none">💁‍♀️</div>
+    </div>
     <div class="promise-ring reveal"><span class="promise-ring-inner">💍</span></div>
     <div class="promise-names reveal">শাওন ❤️ চাঁদনী</div>
     <ul class="promise-list reveal">
