@@ -495,7 +495,7 @@
 
 <!-- AUDIO — no visible controls -->
 <!-- 🎵 music.mp3 একই ফোল্ডারে রাখো -->
-<audio id="bg-audio" loop preload="none">
+<audio id="bg-audio" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg"/>
 </audio>
 
@@ -733,25 +733,37 @@ function closeDrawer(){
 /* ══ MUSIC — fade-in on first touch ══════════════ */
 const audio = document.getElementById('bg-audio');
 audio.volume = 0;
+audio.load();
+let musicStarted = false;
 
 function fadeInMusic(){
-  audio.play().then(() => {
-    const target = 0.7;
-    const steps  = 80;           // 80 × 35ms ≈ 2.8s fade
-    let step = 0;
-    const iv = setInterval(() => {
-      step++;
-      audio.volume = Math.min(parseFloat((target * (step/steps)).toFixed(3)), target);
-      if(step >= steps) clearInterval(iv);
-    }, 35);
-  }).catch(()=>{});
+  if(musicStarted) return;
+  musicStarted = true;
+
+  // iOS AudioContext unlock
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(AC){ const c = new AC(); c.resume().then(()=>c.close()); }
+  } catch(e){}
+
+  const p = audio.play();
+  if(p !== undefined){
+    p.then(() => {
+      let vol = 0;
+      const iv = setInterval(() => {
+        vol = Math.min(vol + 0.01, 0.75);
+        audio.volume = parseFloat(vol.toFixed(3));
+        if(vol >= 0.75) clearInterval(iv);
+      }, 40);
+    }).catch(() => { musicStarted = false; });
+  }
 }
 
-// First touch anywhere → fade in music (once)
-document.addEventListener('touchstart', function firstTouch(){
-  fadeInMusic();
-  document.removeEventListener('touchstart', firstTouch);
-}, { once:true, passive:true });
+// Listen on touchstart, touchend AND click — whichever fires first
+function tryPlay(){ fadeInMusic(); }
+document.addEventListener('touchstart', tryPlay, { once:true, passive:true });
+document.addEventListener('touchend',   tryPlay, { once:true, passive:true });
+document.addEventListener('click',      tryPlay, { once:true, passive:true });
 
 /* ══ PARTICLES ════════════════════════════════════ */
 const cvs = document.getElementById('particles-canvas');
